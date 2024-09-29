@@ -3,6 +3,7 @@ const { JWT_USER_PASSWORD } = require("../config");
 
 function userMiddleware(req, res, next) {
   const { token } = req.cookies;
+  console.log("hello", token);
 
   if (!token) {
     return res.status(403).json({

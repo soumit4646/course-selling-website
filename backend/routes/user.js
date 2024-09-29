@@ -94,12 +94,16 @@ userRouter.post("/signin", async function (req, res) {
     JWT_USER_PASSWORD
   );
 
+  console.log(token);
+
   res.cookie("token", token, {
-    httpOnly: true,
+    sameSite: "none",
+    secure: true,
   });
 
   res.status(201).json({
     message: "Logged in successfully",
+    token,
   });
 });
 
