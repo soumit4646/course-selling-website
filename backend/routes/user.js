@@ -44,6 +44,7 @@ userRouter.post("/signup", async function (req, res) {
       password: hashedPassword,
       firstName,
       lastName,
+      balance: 0,
     });
   } catch (error) {
     return res.status(401).json({
@@ -107,6 +108,31 @@ userRouter.post("/signin", async function (req, res) {
   });
 });
 
+userRouter.post("/add-money", userMiddleware, async (req, res) => {
+  const userId = req.userId;
+  const { amount } = req.body;
+
+  const isValid = z.number().safeParse(parseInt(amount));
+
+  if (isValid.success === false) {
+    return res.status(400).json({
+      error: "Invalid amount",
+    });
+  }
+
+  const user = await userModel.findByIdAndUpdate(userId, {
+    $inc: {
+      balance: amount,
+    },
+  });
+
+  console.log(user);
+
+  return res.status(200).json({
+    message: "Money added successfully",
+  });
+});
+
 userRouter.get("/purchases", userMiddleware, async function (req, res) {
   const userId = req.userId;
 
@@ -120,13 +146,34 @@ userRouter.get("/purchases", userMiddleware, async function (req, res) {
     purchasedCourseIds.push(purchases[i].courseId);
   }
 
-  const coursesData = await courseModel.find({
-    _id: { $in: purchasedCourseIds },
-  });
+  const coursesData = await courseModel
+    .find({
+      _id: { $in: purchasedCourseIds },
+    })
+    .populate("creatorId");
 
   res.json({
-    purchases,
     coursesData,
+  });
+});
+
+userRouter.get("/me", userMiddleware, async (req, res) => {
+  const userId = req.userId;
+
+  const user = await userModel
+    .findById({ _id: userId })
+    .select("-password")
+    .select("-__v");
+
+  return res.status(200).json({
+    user,
+  });
+});
+
+userRouter.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({
+    message: "Logged out successfully",
   });
 });
 

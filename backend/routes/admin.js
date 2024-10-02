@@ -21,9 +21,24 @@ const adminLognin = z.object({
 
 const courseSchema = z.object({
   title: z.string().max(50),
-  description: z.string().max(300),
+  description: z.string().max(500),
   imageUrl: z.string().url(),
   price: z.number(),
+  courseContent: z.string(),
+});
+
+adminRouter.get("/me", adminMiddleware, async (req, res) => {
+  const adminId = req.adminId;
+
+  const admin = await adminModel
+    .findOne({
+      _id: adminId,
+    })
+    .select("-password");
+
+  return res.status(200).json({
+    admin,
+  });
 });
 
 adminRouter.post("/signup", async function (req, res) {
@@ -113,13 +128,18 @@ adminRouter.post("/signin", async function (req, res) {
 adminRouter.post("/course", adminMiddleware, async function (req, res) {
   const adminId = req.adminId;
 
-  const { title, description, imageUrl, price } = req.body;
+  const { title, description, imageUrl, courseContent } = req.body;
+
+  const price = parseInt(req.body.price);
+
+  console.log(title, description, imageUrl, price, courseContent);
 
   const validation = courseSchema.safeParse({
     title,
     description,
     imageUrl,
     price,
+    courseContent,
   });
 
   if (!validation.success) {
@@ -135,6 +155,7 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
     imageUrl: imageUrl,
     price: price,
     creatorId: adminId,
+    courseContent: courseContent,
   });
 
   res.json({
@@ -143,16 +164,38 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
   });
 });
 
+adminRouter.post("/preview/:courseId", adminMiddleware, async (req, res) => {
+  const { courseId } = req.params;
+  const adminId = req.adminId;
+
+  const course = await courseModel.findOne({
+    _id: courseId,
+    creatorId: adminId,
+  });
+
+  if (!course) {
+    return res.status(404).json({
+      error: "Course not found",
+    });
+  }
+
+  return res.json({
+    course,
+  });
+});
+
 adminRouter.put("/course", adminMiddleware, async function (req, res) {
   const adminId = req.adminId;
 
-  const { title, description, imageUrl, price, courseId } = req.body;
+  const { title, description, imageUrl, price, courseId, courseContent } =
+    req.body;
 
   const validation = courseSchema.safeParse({
     title,
     description,
     imageUrl,
     price,
+    courseContent,
   });
 
   if (!validation.success) {
@@ -161,24 +204,36 @@ adminRouter.put("/course", adminMiddleware, async function (req, res) {
     });
   }
 
-  const course = await courseModel.updateOne(
-    {
-      _id: courseId,
-      creatorId: adminId,
-    },
-    {
-      title: title,
-      description: description,
-      imageUrl: imageUrl,
-      price: price,
-    }
-  );
-  console.log(course);
+  try {
+    const course = await courseModel.updateOne(
+      {
+        _id: courseId,
+        creatorId: adminId,
+      },
+      {
+        title: title,
+        description: description,
+        imageUrl: imageUrl,
+        price: price,
+        courseContent: courseContent,
+      }
+    );
 
-  res.json({
-    message: "Course updated",
-    courseId: course._id,
-  });
+    if (course.modifiedCount === 0) {
+      return res.status(403).json({
+        error: "Course not found",
+      });
+    }
+
+    return res.json({
+      message: "Course updated",
+      courseId: course._id,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      error: "Course not found",
+    });
+  }
 });
 
 adminRouter.get("/course/bulk", adminMiddleware, async function (req, res) {
@@ -188,9 +243,15 @@ adminRouter.get("/course/bulk", adminMiddleware, async function (req, res) {
     creatorId: adminId,
   });
 
-  res.json({
-    message: "Course updated",
+  return res.json({
     courses,
+  });
+});
+
+adminRouter.get("/logout", (req, res) => {
+  res.clearCookie("admin_token");
+  res.status(200).json({
+    message: "Logged out successfully",
   });
 });
 

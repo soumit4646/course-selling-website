@@ -20,7 +20,7 @@ export default function Signup() {
     }
 
     try {
-      const res = await axios.post("/api/v1/user/signup", {
+      const res = await axios.post("/api/v1/admin/signup", {
         firstName,
         lastName,
         email,
@@ -28,15 +28,15 @@ export default function Signup() {
       });
 
       toast.success(res.data.message);
-      navigate("/auth/login");
+      navigate("/admin/auth/signin");
     } catch (error) {
       toast.error(error.response.data.error);
     }
   };
 
   return (
-    <div className="border max-w-[90vw] md:max-w-xl p-4 mx-auto rounded text-slate-800">
-      <h1 className="text-center mb-4 text-4xl font-bold">Signup Form</h1>
+    <div className="border max-w-[90vw] md:max-w-xl p-4 mx-auto rounded">
+      <h1 className="text-center mb-4 text-4xl font-bold">Admin Signup</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="relative">
           <input
@@ -103,13 +103,13 @@ export default function Signup() {
           </div>
         </div>
 
-        <button className="py-2 font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-          <p className="tracking-wider text-x">Signup</p>
+        <button className="py-2 px-4 font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+          Signup
         </button>
         <p>
           Already have a account.{" "}
-          <Link to="/auth/login" className="text-blue-600">
-            <span className="underline">Login</span>
+          <Link to="/admin/auth/signin" className="text-blue-600">
+            Login
           </Link>
         </p>
       </form>

@@ -3,11 +3,10 @@ const { JWT_USER_PASSWORD } = require("../config");
 
 function userMiddleware(req, res, next) {
   const { token } = req.cookies;
-  console.log("hello", token);
 
   if (!token) {
     return res.status(403).json({
-      message: "You are not signed in",
+      unautharized: "You are not signed in",
     });
   }
 
@@ -18,7 +17,7 @@ function userMiddleware(req, res, next) {
     next();
   } else {
     res.status(403).json({
-      message: "You are not signed in",
+      unautharized: "You are not signed in",
     });
   }
 }

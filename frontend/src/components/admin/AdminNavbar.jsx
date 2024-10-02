@@ -1,62 +1,64 @@
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+
+import adminContext from "../../../lib/globalContext";
 import axios from "axios";
-import { ArrowRight, Clapperboard, LogOut } from "lucide-react";
 
-import userContext from "../../lib/globalContext";
-
-export function Navbar() {
-  const { user } = useContext(userContext);
-  console.log(user);
+export function AdminNavbar() {
+  const { admin } = useContext(adminContext);
   const navigate = useNavigate();
   return (
     <header className="bg-white p-6 flex justify-center border-b">
       <nav className="container flex justify-between items-center">
         <div className="logo flex gap-3 items-center text-xl">
-          <Clapperboard size={50} className="text-blue-400" />
+          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         </div>
-        {user && (
+
+        {admin && (
           <div className="flex gap-10">
             <Link
-              to={"/all-courses"}
+              to={"/admin"}
               className="hover:bg-slate-100  px-4 py-2 rounded-md flex gap-x-2 items-center"
             >
-              <p className="text-xl">All Courses</p>
+              <p className="text-xl">Go Home</p>
             </Link>
 
             <Link
-              to={"/profile"}
+              to={"/admin/create"}
               className="hover:bg-slate-100  px-4 py-2 rounded-md flex gap-x-2 items-center"
             >
-              <p className="text-xl">Profile</p>
+              <p className="text-xl">Create Course</p>
             </Link>
           </div>
         )}
 
-        <div className="flex gap-x-4">
-          {user ? (
+        {admin ? (
+          <div className="flex gap-x-4 text-white">
             <button
-              onClick={async () => {
+              className="bg-red-500 hover:bg-red-700  px-4 py-2 rounded-md flex gap-x-2 items-center"
+              onClick={() => {
                 try {
-                  await axios.get("/api/v1/user/logout");
-                  document.location.reload();
+                  const res = axios.get("/api/v1/admin/logout");
+                  navigate(0);
                 } catch (error) {}
               }}
-              className="bg-red-600 hover:bg-red-700  px-4 py-2 rounded-md flex gap-x-2 items-center text-white"
             >
               <p className="text-xl ">Logout</p>
-              <LogOut />
+              <ArrowRight />
             </button>
-          ) : (
+          </div>
+        ) : (
+          <div className="flex gap-x-4">
             <Link
-              to="/auth/signup"
+              to="/admin/auth/signup"
               className="hover:bg-slate-100  px-4 py-2 rounded-md flex gap-x-2 items-center"
             >
               <p className="text-xl">Signup</p>
               <ArrowRight />
             </Link>
-          )}
-        </div>
+          </div>
+        )}
       </nav>
     </header>
   );

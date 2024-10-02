@@ -6,6 +6,10 @@ const ObjectId = mongoose.Types.ObjectId;
 const userSchema = new Schema({
   email: { type: String, unique: true },
   password: String,
+  balance: {
+    type: Number,
+    required: true,
+  },
   firstName: String,
   lastName: String,
 });
@@ -22,6 +26,7 @@ const courseSchema = new Schema({
   description: String,
   price: Number,
   imageUrl: String,
+  courseContent: String,
   creatorId: {
     type: ObjectId,
     ref: "admin",
