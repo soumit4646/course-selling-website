@@ -29,7 +29,7 @@ export default function CreateCourse() {
   };
 
   return (
-    <div className="max-w-[90vw] mx-auto flex flex-col gap-4">
+    <div className="max-w-[90vw] mx-auto flex flex-col gap-4 mb-10">
       <div>
         <h1 className="text-center text-4xl font-bold">Create Course</h1>
       </div>
