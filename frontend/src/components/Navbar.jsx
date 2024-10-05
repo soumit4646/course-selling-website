@@ -48,13 +48,22 @@ export function Navbar() {
               <LogOut />
             </button>
           ) : (
-            <Link
-              to="/auth/signup"
-              className="hover:bg-slate-100  px-4 py-2 rounded-md flex gap-x-2 items-center"
-            >
-              <p className="text-xl">Signup</p>
-              <ArrowRight />
-            </Link>
+            <div className="flex">
+              <Link
+                to="/admin"
+                className="hover:bg-slate-100  px-4 py-2 rounded-md flex gap-x-2 items-center"
+              >
+                <p className="text-xl">Admin Site</p>
+              </Link>
+
+              <Link
+                to="/auth/signup"
+                className="hover:bg-slate-100  px-4 py-2 rounded-md flex gap-x-2 items-center"
+              >
+                <p className="text-xl">Signup</p>
+                <ArrowRight />
+              </Link>
+            </div>
           )}
         </div>
       </nav>

@@ -64,10 +64,6 @@ export default function Login() {
           Login
         </button>
 
-        <button className=" py-2 px-4 bg-blue-500 rounded-lg hover:bg-blue-600 text-white font-bold">
-          Demo login
-        </button>
-
         <p>
           Don&#39;t have an account.{" "}
           <Link to="/auth/signup" className="text-blue-600">
