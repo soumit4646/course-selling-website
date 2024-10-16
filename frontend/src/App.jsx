@@ -1,26 +1,23 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
 import AuthLayout from "./layouts/AuthLayout";
 import HomeLayout from "./layouts/HomeLayout";
+import AdminLayout from "./layouts/AdminLayout";
+import AdminAuthLayout from "./layouts/AdminAuthLayout";
+
+import userContext from "../lib/globalContext";
+
+import AllCourses, { loader as AllCoursesLoader } from "./components/AllCourses";
+import UserProfile, { loader as LoadUserProfile, action as UserProfileAction } from "./components/user/UserProfile";
+import CoursePage, { loader as CourseLoader } from "./components/course/CoursePage";
 
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
-import { Toaster } from "react-hot-toast";
 import Page404 from "./components/404";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import userContext from "../lib/globalContext";
-
-import AllCourses from "./components/AllCourses";
-import UserProfile from "./components/user/UserProfile";
-import CoursePage from "./components/course/CoursePage";
-import AdminLayout from "./layouts/AdminLayout";
 import AdminSignup from "./components/admin/AdminSignup";
-import AdminAuthLayout from "./layouts/AdminAuthLayout";
 import AdminSignin from "./components/admin/AdminSignin";
 import CreateCourse from "./components/admin/CreateCourse";
 import AllCourse from "./components/admin/AllCourse";
@@ -46,7 +43,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <HomeLayout />,
     errorElement: <Page404 />,
-
     children: [
       {
         path: "/",
@@ -55,14 +51,18 @@ const router = createBrowserRouter([
       {
         path: "/all-courses",
         element: <AllCourses />,
+        loader: AllCoursesLoader,
       },
       {
         path: "/profile",
         element: <UserProfile />,
+        loader: LoadUserProfile,
+        action: UserProfileAction,
       },
       {
         path: "/course/:courseId",
         element: <CoursePage />,
+        loader: CourseLoader,
       },
     ],
   },
@@ -136,10 +136,10 @@ export default function App() {
 
   return (
     <userContext.Provider value={{ user, admin }}>
-      <div>
-        <Toaster position="top-center" />
-        <RouterProvider router={router} />
-      </div>
+        <div>
+          <Toaster position="top-center" />
+          <RouterProvider router={router} />
+        </div>
     </userContext.Provider>
   );
 }

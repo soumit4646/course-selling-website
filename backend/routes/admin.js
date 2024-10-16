@@ -116,7 +116,7 @@ adminRouter.post("/signin", async function (req, res) {
     JWT_ADMIN_PASSWORD
   );
 
-  res.cookie("admin_token", token, {
+  res.cookie("admintoken", token, {
     httpOnly: true,
   });
 
@@ -249,7 +249,7 @@ adminRouter.get("/course/bulk", adminMiddleware, async function (req, res) {
 });
 
 adminRouter.get("/logout", (req, res) => {
-  res.clearCookie("admin_token");
+  res.clearCookie("admintoken");
   res.status(200).json({
     message: "Logged out successfully",
   });

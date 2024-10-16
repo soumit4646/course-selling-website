@@ -61,7 +61,7 @@ export default function EditCoursePage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mb-10">
       <div>
         <h1 className="text-center text-4xl font-bold"> {} Course</h1>
       </div>

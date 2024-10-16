@@ -2,15 +2,15 @@ const jwt = require("jsonwebtoken");
 const { JWT_ADMIN_PASSWORD } = require("../config");
 
 function adminMiddleware(req, res, next) {
-  const { admin_token } = req.cookies;
+  const { admintoken } = req.cookies;
 
-  if (!admin_token) {
+  if (!admintoken) {
     return res.status(403).json({
       message: "You are not signed in",
     });
   }
 
-  const decoded = jwt.verify(admin_token, JWT_ADMIN_PASSWORD);
+  const decoded = jwt.verify(admintoken, JWT_ADMIN_PASSWORD);
 
   if (decoded) {
     req.adminId = decoded.id;

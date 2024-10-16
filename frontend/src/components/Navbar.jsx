@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { ArrowRight, Clapperboard, LogOut } from "lucide-react";
 
@@ -7,13 +7,12 @@ import userContext from "../../lib/globalContext";
 
 export function Navbar() {
   const { user } = useContext(userContext);
-  console.log(user);
-  const navigate = useNavigate();
+
   return (
-    <header className="bg-white p-6 flex justify-center border-b">
+    <header className="bg-white p-2 flex justify-center border-b">
       <nav className="container flex justify-between items-center">
         <div className="logo flex gap-3 items-center text-xl">
-          <Clapperboard size={50} className="text-blue-400" />
+          <Clapperboard size={35} className="text-blue-400" />
         </div>
         {user && (
           <div className="flex gap-10">
